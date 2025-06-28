@@ -1,0 +1,542 @@
+[
+  {
+    "id": 1,
+    "name": "Paracetamol",
+    "usage": "Pain relief, fever reduction",
+    "dosage": "500mg-1g every 4-6 hours, max 4g daily",
+    "sideEffects": "Rare: rash, nausea. Overdose risks liver damage",
+    "alternatives": ["Ibuprofen", "Aspirin", "Acetaminophen"],
+    "tags": ["pain-relief", "fever-reducer", "over-the-counter"],
+    "category": "Analgesic"
+  },
+  {
+    "id": 2,
+    "name": "Ibuprofen",
+    "usage": "Pain relief, inflammation, fever reduction",
+    "dosage": "200-400mg every 4-6 hours, max 1.2g daily",
+    "sideEffects": "Stomach upset, heartburn, kidney issues with long-term use",
+    "alternatives": ["Paracetamol", "Naproxen", "Aspirin"],
+    "tags": ["pain-relief", "anti-inflammatory", "fever-reducer"],
+    "category": "NSAID"
+  },
+  {
+    "id": 3,
+    "name": "Aspirin",
+    "usage": "Pain relief, fever reduction, heart attack prevention",
+    "dosage": "75-100mg daily for heart protection, 300-600mg for pain",
+    "sideEffects": "Stomach bleeding, heartburn, allergic reactions",
+    "alternatives": ["Paracetamol", "Ibuprofen", "Clopidogrel"],
+    "tags": ["pain-relief", "blood-thinner", "heart-protection"],
+    "category": "Antiplatelet"
+  },
+  {
+    "id": 4,
+    "name": "Amoxicillin",
+    "usage": "Bacterial infections, respiratory tract infections",
+    "dosage": "250-500mg every 8 hours for 7-10 days",
+    "sideEffects": "Nausea, diarrhea, allergic reactions",
+    "alternatives": ["Azithromycin", "Cephalexin", "Clarithromycin"],
+    "tags": ["antibiotic", "prescription", "bacterial-infection"],
+    "category": "Antibiotic"
+  },
+  {
+    "id": 5,
+    "name": "Azithromycin",
+    "usage": "Bacterial infections, respiratory infections",
+    "dosage": "500mg on day 1, then 250mg daily for 4 days",
+    "sideEffects": "Nausea, diarrhea, hearing loss with high doses",
+    "alternatives": ["Amoxicillin", "Doxycycline", "Clarithromycin"],
+    "tags": ["antibiotic", "prescription", "respiratory"],
+    "category": "Antibiotic"
+  },
+  {
+    "id": 6,
+    "name": "Doxycycline",
+    "usage": "Bacterial infections, acne, malaria prevention",
+    "dosage": "100mg twice daily with food",
+    "sideEffects": "Nausea, photosensitivity, esophageal irritation",
+    "alternatives": ["Tetracycline", "Minocycline", "Azithromycin"],
+    "tags": ["antibiotic", "acne-treatment", "prescription"],
+    "category": "Tetracycline Antibiotic"
+  },
+  {
+    "id": 7,
+    "name": "Omeprazole",
+    "usage": "Acid reflux, stomach ulcers, GERD",
+    "dosage": "20mg once daily before breakfast",
+    "sideEffects": "Headache, nausea, diarrhea",
+    "alternatives": ["Lansoprazole", "Pantoprazole", "Ranitidine"],
+    "tags": ["acid-reducer", "stomach-protection", "prescription"],
+    "category": "Proton Pump Inhibitor"
+  },
+  {
+    "id": 8,
+    "name": "Lansoprazole",
+    "usage": "Acid reflux, ulcers, Zollinger-Ellison syndrome",
+    "dosage": "15-30mg once daily",
+    "sideEffects": "Headache, dizziness, stomach pain",
+    "alternatives": ["Omeprazole", "Pantoprazole", "Esomeprazole"],
+    "tags": ["acid-reducer", "prescription", "ulcer-treatment"],
+    "category": "Proton Pump Inhibitor"
+  },
+  {
+    "id": 9,
+    "name": "Cetirizine",
+    "usage": "Allergies, hay fever, hives",
+    "dosage": "10mg once daily",
+    "sideEffects": "Drowsiness, dry mouth, fatigue",
+    "alternatives": ["Loratadine", "Fexofenadine", "Diphenhydramine"],
+    "tags": ["antihistamine", "allergy-relief", "over-the-counter"],
+    "category": "Antihistamine"
+  },
+  {
+    "id": 10,
+    "name": "Loratadine",
+    "usage": "Allergies, allergic rhinitis",
+    "dosage": "10mg once daily",
+    "sideEffects": "Headache, dry mouth, fatigue",
+    "alternatives": ["Cetirizine", "Fexofenadine", "Desloratadine"],
+    "tags": ["antihistamine", "allergy-relief", "over-the-counter"],
+    "category": "Antihistamine"
+  },
+  {
+    "id": 11,
+    "name": "Metformin",
+    "usage": "Type 2 diabetes management",
+    "dosage": "500mg twice daily with meals",
+    "sideEffects": "Nausea, diarrhea, metallic taste",
+    "alternatives": ["Glimepiride", "Sitagliptin", "Insulin"],
+    "tags": ["diabetes", "blood-sugar", "prescription"],
+    "category": "Antidiabetic"
+  },
+  {
+    "id": 12,
+    "name": "Insulin Glargine",
+    "usage": "Diabetes (Type 1 and Type 2) blood sugar control",
+    "dosage": "Dose varies, typically 10-20 units daily",
+    "sideEffects": "Hypoglycemia, weight gain, injection site reactions",
+    "alternatives": ["Insulin Detemir", "Insulin Lispro", "Metformin"],
+    "tags": ["diabetes", "insulin", "prescription"],
+    "category": "Antidiabetic"
+  },
+  {
+    "id": 13,
+    "name": "Salbutamol",
+    "usage": "Asthma, bronchospasm, COPD",
+    "dosage": "100-200mcg inhaled as needed, max 8 puffs daily",
+    "sideEffects": "Tremor, headache, palpitations",
+    "alternatives": ["Terbutaline", "Formoterol", "Salmeterol"],
+    "tags": ["asthma", "bronchodilator", "inhaler"],
+    "category": "Bronchodilator"
+  },
+  {
+    "id": 14,
+    "name": "Budesonide",
+    "usage": "Asthma, allergic rhinitis",
+    "dosage": "180-360mcg inhaled twice daily",
+    "sideEffects": "Throat irritation, cough, hoarseness",
+    "alternatives": ["Fluticasone", "Beclomethasone", "Mometasone"],
+    "tags": ["asthma", "corticosteroid", "inhaler"],
+    "category": "Corticosteroid"
+  },
+  {
+    "id": 15,
+    "name": "Simvastatin",
+    "usage": "High cholesterol, cardiovascular prevention",
+    "dosage": "20-40mg once daily in the evening",
+    "sideEffects": "Muscle pain, liver issues",
+    "alternatives": ["Atorvastatin", "Rosuvastatin", "Pravastatin"],
+    "tags": ["cholesterol", "heart-health", "prescription"],
+    "category": "Statin"
+  },
+  {
+    "id": 16,
+    "name": "Atorvastatin",
+    "usage": "High cholesterol, cardiovascular risk reduction",
+    "dosage": "10-80mg once daily",
+    "sideEffects": "Muscle pain, liver enzyme changes",
+    "alternatives": ["Simvastatin", "Rosuvastatin", "Pravastatin"],
+    "tags": ["cholesterol", "heart-health", "prescription"],
+    "category": "Statin"
+  },
+  {
+    "id": 17,
+    "name": "Diazepam",
+    "usage": "Anxiety, muscle spasms, seizures",
+    "dosage": "2-10mg 2-4 times daily",
+    "sideEffects": "Drowsiness, confusion, dependency risk",
+    "alternatives": ["Lorazepam", "Alprazolam", "Clonazepam"],
+    "tags": ["anxiety", "muscle-relaxant", "controlled-substance"],
+    "category": "Benzodiazepine"
+  },
+  {
+    "id": 18,
+    "name": "Lorazepam",
+    "usage": "Anxiety, seizures, sedation",
+    "dosage": "1-2mg 2-3 times daily",
+    "sideEffects": "Drowsiness, dizziness, respiratory depression",
+    "alternatives": ["Diazepam", "Alprazolam", "Clonazepam"],
+    "tags": ["anxiety", "sedative", "controlled-substance"],
+    "category": "Benzodiazepine"
+  },
+  {
+    "id": 19,
+    "name": "Warfarin",
+    "usage": "Blood clot prevention, atrial fibrillation",
+    "dosage": "Variable based on INR (2-10mg daily)",
+    "sideEffects": "Bleeding, bruising, skin necrosis",
+    "alternatives": ["Rivaroxaban", "Apixaban", "Dabigatran"],
+    "tags": ["blood-thinner", "anticoagulant", "monitoring-required"],
+    "category": "Anticoagulant"
+  },
+  {
+    "id": 20,
+    "name": "Rivaroxaban",
+    "usage": "Blood clot prevention, deep vein thrombosis",
+    "dosage": "10-20mg once daily",
+    "sideEffects": "Bleeding, nausea, back pain",
+    "alternatives": ["Warfarin", "Apixaban", "Dabigatran"],
+    "tags": ["blood-thinner", "anticoagulant", "prescription"],
+    "category": "Anticoagulant"
+  },
+  {
+    "id": 21,
+    "name": "Losartan",
+    "usage": "High blood pressure, heart failure",
+    "dosage": "25-100mg once daily",
+    "sideEffects": "Dizziness, fatigue, kidney issues",
+    "alternatives": ["Lisinopril", "Amlodipine", "Valsartan"],
+    "tags": ["hypertension", "heart-failure", "prescription"],
+    "category": "ACE Inhibitor"
+  },
+  {
+    "id": 22,
+    "name": "Amlodipine",
+    "usage": "High blood pressure, angina",
+    "dosage": "5-10mg once daily",
+    "sideEffects": "Swelling, dizziness, fatigue",
+    "alternatives": ["Nifedipine", "Diltiazem", "Verapamil"],
+    "tags": ["hypertension", "angina", "prescription"],
+    "category": "Calcium Channel Blocker"
+  },
+  {
+    "id": 23,
+    "name": "Sertraline",
+    "usage": "Depression, anxiety, OCD",
+    "dosage": "50-200mg once daily",
+    "sideEffects": "Nausea, insomnia, dry mouth",
+    "alternatives": ["Fluoxetine", "Citalopram", "Escitalopram"],
+    "tags": ["antidepressant", "anxiety-relief", "prescription"],
+    "category": "SSRI"
+  },
+  {
+    "id": 24,
+    "name": "Fluoxetine",
+    "usage": "Depression, OCD, bulimia",
+    "dosage": "20-60mg once daily",
+    "sideEffects": "Nausea, headache, insomnia",
+    "alternatives": ["Sertraline", "Citalopram", "Paroxetine"],
+    "tags": ["antidepressant", "prescription", "OCD"],
+    "category": "SSRI"
+  },
+  {
+    "id": 25,
+    "name": "Prednisone",
+    "usage": "Inflammation, autoimmune disorders",
+    "dosage": "5-60mg daily depending on condition",
+    "sideEffects": "Weight gain, insomnia, mood changes",
+    "alternatives": ["Hydrocortisone", "Dexamethasone", "Methylprednisolone"],
+    "tags": ["anti-inflammatory", "steroid", "prescription"],
+    "category": "Corticosteroid"
+  },
+  {
+    "id": 26,
+    "name": "Hydrocortisone",
+    "usage": "Inflammation, adrenal insufficiency",
+    "dosage": "20-240mg daily in divided doses",
+    "sideEffects": "Weight gain, acne, mood swings",
+    "alternatives": ["Prednisone", "Dexamethasone", "Budesonide"],
+    "tags": ["anti-inflammatory", "steroid", "prescription"],
+    "category": "Corticosteroid"
+  },
+  {
+    "id": 27,
+    "name": "Albuterol",
+    "usage": "Asthma, bronchospasm relief",
+    "dosage": "90-180mcg inhaled every 4-6 hours as needed",
+    "sideEffects": "Tremors, nervousness, throat irritation",
+    "alternatives": ["Levalbuterol", "Ipratropium", "Formoterol"],
+    "tags": ["asthma", "bronchodilator", "inhaler"],
+    "category": "Bronchodilator"
+  },
+  {
+    "id": 28,
+    "name": "Formoterol",
+    "usage": "Asthma, COPD maintenance",
+    "dosage": "12mcg twice daily",
+    "sideEffects": "Tremor, headache, palpitations",
+    "alternatives": ["Salbutamol", "Salmeterol", "Ipratropium"],
+    "tags": ["asthma", "bronchodilator", "prescription"],
+    "category": "Bronchodilator"
+  },
+  {
+    "id": 29,
+    "name": "Ciprofloxacin",
+    "usage": "Bacterial infections, urinary tract infections",
+    "dosage": "250-500mg every 12 hours for 7-14 days",
+    "sideEffects": "Nausea, tendon rupture risk, photosensitivity",
+    "alternatives": ["Levofloxacin", "Norfloxacin", "Amoxicillin"],
+    "tags": ["antibiotic", "prescription", "UTI"],
+    "category": "Fluoroquinolone Antibiotic"
+  },
+  {
+    "id": 30,
+    "name": "Levofloxacin",
+    "usage": "Bacterial infections, pneumonia",
+    "dosage": "250-750mg daily for 5-14 days",
+    "sideEffects": "Nausea, tendonitis, QT prolongation",
+    "alternatives": ["Ciprofloxacin", "Moxifloxacin", "Amoxicillin"],
+    "tags": ["antibiotic", "prescription", "pneumonia"],
+    "category": "Fluoroquinolone Antibiotic"
+  },
+  {
+    "id": 31,
+    "name": "Clopidogrel",
+    "usage": "Heart attack prevention, stroke prevention",
+    "dosage": "75mg once daily",
+    "sideEffects": "Bleeding, rash, stomach pain",
+    "alternatives": ["Aspirin", "Ticagrelor", "Prasugrel"],
+    "tags": ["blood-thinner", "heart-protection", "prescription"],
+    "category": "Antiplatelet"
+  },
+  {
+    "id": 32,
+    "name": "Ticagrelor",
+    "usage": "Acute coronary syndrome, heart attack prevention",
+    "dosage": "90mg twice daily",
+    "sideEffects": "Bleeding, dyspnea, bradycardia",
+    "alternatives": ["Clopidogrel", "Prasugrel", "Aspirin"],
+    "tags": ["blood-thinner", "heart-protection", "prescription"],
+    "category": "Antiplatelet"
+  },
+  {
+    "id": 33,
+    "name": "Furosemide",
+    "usage": "Edema, heart failure, hypertension",
+    "dosage": "20-80mg once or twice daily",
+    "sideEffects": "Dehydration, electrolyte imbalance, dizziness",
+    "alternatives": ["Hydrochlorothiazide", "Bumetanide", "Torsemide"],
+    "tags": ["diuretic", "heart-failure", "prescription"],
+    "category": "Diuretic"
+  },
+  {
+    "id": 34,
+    "name": "Hydrochlorothiazide",
+    "usage": "Hypertension, edema",
+    "dosage": "12.5-50mg once daily",
+    "sideEffects": "Dizziness, low potassium, dehydration",
+    "alternatives": ["Furosemide", "Chlorthalidone", "Indapamide"],
+    "tags": ["diuretic", "hypertension", "prescription"],
+    "category": "Diuretic"
+  },
+  {
+    "id": 35,
+    "name": "Morphine",
+    "usage": "Severe pain, post-surgical pain",
+    "dosage": "5-30mg every 4 hours as needed",
+    "sideEffects": "Drowsiness, constipation, respiratory depression",
+    "alternatives": ["Oxycodone", "Fentanyl", "Tramadol"],
+    "tags": ["opioid", "pain-relief", "controlled-substance"],
+    "category": "Opioid Analgesic"
+  },
+  {
+    "id": 36,
+    "name": "Oxycodone",
+    "usage": "Moderate to severe pain",
+    "dosage": "5-15mg every 4-6 hours as needed",
+    "sideEffects": "Drowsiness, nausea, addiction risk",
+    "alternatives": ["Morphine", "Hydrocodone", "Tramadol"],
+    "tags": ["opioid", "pain-relief", "controlled-substance"],
+    "category": "Opioid Analgesic"
+  },
+  {
+    "id": 37,
+    "name": "Lisinopril",
+    "usage": "Hypertension, heart failure",
+    "dosage": "10-40mg once daily",
+    "sideEffects": "Cough, dizziness, kidney issues",
+    "alternatives": ["Losartan", "Enalapril", "Amlodipine"],
+    "tags": ["hypertension", "heart-failure", "prescription"],
+    "category": "ACE Inhibitor"
+  },
+  {
+    "id": 38,
+    "name": "Enalapril",
+    "usage": "Hypertension, heart failure",
+    "dosage": "5-40mg daily in 1-2 doses",
+    "sideEffects": "Cough, hypotension, kidney dysfunction",
+    "alternatives": ["Lisinopril", "Losartan", "Captopril"],
+    "tags": ["hypertension", "heart-failure", "prescription"],
+    "category": "ACE Inhibitor"
+  },
+  {
+    "id": 39,
+    "name": "Metoprolol",
+    "usage": "Hypertension, angina, heart failure",
+    "dosage": "25-100mg twice daily",
+    "sideEffects": "Fatigue, dizziness, slow heart rate",
+    "alternatives": ["Atenolol", "Bisoprolol", "Carvedilol"],
+    "tags": ["hypertension", "beta-blocker", "prescription"],
+    "category": "Beta Blocker"
+  },
+  {
+    "id": 40,
+    "name": "Atenolol",
+    "usage": "Hypertension, angina",
+    "dosage": "25-100mg once daily",
+    "sideEffects": "Fatigue, cold hands, bradycardia",
+    "alternatives": ["Metoprolol", "Bisoprolol", "Propranolol"],
+    "tags": ["hypertension", "beta-blocker", "prescription"],
+    "category": "Beta Blocker"
+  },
+  {
+    "id": 41,
+    "name": "Gabapentin",
+    "usage": "Neuropathic pain, seizures",
+    "dosage": "300-600mg three times daily",
+    "sideEffects": "Drowsiness, dizziness, weight gain",
+    "alternatives": ["Pregabalin", "Carbamazepine", "Lamotrigine"],
+    "tags": ["pain-relief", "anticonvulsant", "prescription"],
+    "category": "Anticonvulsant"
+  },
+  {
+    "id": 42,
+    "name": "Pregabalin",
+    "usage": "Neuropathic pain, fibromyalgia",
+    "dosage": "75-300mg twice daily",
+    "sideEffects": "Drowsiness, weight gain, swelling",
+    "alternatives": ["Gabapentin", "Duloxetine", "Amitriptyline"],
+    "tags": ["pain-relief", "anticonvulsant", "prescription"],
+    "category": "Anticonvulsant"
+  },
+  {
+    "id": 43,
+    "name": "Acyclovir",
+    "usage": "Herpes simplex, varicella-zoster",
+    "dosage": "200-800mg 5 times daily for 5-10 days",
+    "sideEffects": "Nausea, headache, kidney issues",
+    "alternatives": ["Valacyclovir", "Famciclovir", "Penciclovir"],
+    "tags": ["antiviral", "herpes", "prescription"],
+    "category": "Antiviral"
+  },
+  {
+    "id": 44,
+    "name": "Valacyclovir",
+    "usage": "Herpes simplex, shingles",
+    "dosage": "1g twice daily for 7-10 days",
+    "sideEffects": "Nausea, headache, renal impairment",
+    "alternatives": ["Acyclovir", "Famciclovir", "Ganciclovir"],
+    "tags": ["antiviral", "herpes", "prescription"],
+    "category": "Antiviral"
+  },
+  {
+    "id": 45,
+    "name": "Ranitidine",
+    "usage": "Acid reflux, ulcers",
+    "dosage": "150mg twice daily or 300mg at night",
+    "sideEffects": "Headache, dizziness, constipation",
+    "alternatives": ["Omeprazole", "Famotidine", "Pantoprazole"],
+    "tags": ["acid-reducer", "ulcer-treatment", "prescription"],
+    "category": "H2 Receptor Antagonist"
+  },
+  {
+    "id": 46,
+    "name": "Famotidine",
+    "usage": "Acid reflux, heartburn",
+    "dosage": "20-40mg once or twice daily",
+    "sideEffects": "Headache, dizziness, diarrhea",
+    "alternatives": ["Ranitidine", "Omeprazole", "Cimetidine"],
+    "tags": ["acid-reducer", "over-the-counter", "ulcer-treatment"],
+    "category": "H2 Receptor Antagonist"
+  },
+  {
+    "id": 47,
+    "name": "Erythromycin",
+    "usage": "Bacterial infections, acne",
+    "dosage": "250-500mg every 6 hours",
+    "sideEffects": "Nausea, stomach pain, QT prolongation",
+    "alternatives": ["Azithromycin", "Clarithromycin", "Doxycycline"],
+    "tags": ["antibiotic", "acne-treatment", "prescription"],
+    "category": "Macrolide Antibiotic"
+  },
+  {
+    "id": 48,
+    "name": "Clarithromycin",
+    "usage": "Bacterial infections, H. pylori",
+    "dosage": "250-500mg twice daily for 7-14 days",
+    "sideEffects": "Diarrhea, taste changes, liver issues",
+    "alternatives": ["Azithromycin", "Erythromycin", "Amoxicillin"],
+    "tags": ["antibiotic", "prescription", "H-pylori"],
+    "category": "Macrolide Antibiotic"
+  },
+  {
+    "id": 49,
+    "name": "Sildenafil",
+    "usage": "Erectile dysfunction, pulmonary hypertension",
+    "dosage": "25-100mg as needed, 1 hour before activity",
+    "sideEffects": "Headache, flushing, vision changes",
+    "alternatives": ["Tadalafil", "Vardenafil", "Avanafil"],
+    "tags": ["erectile-dysfunction", "hypertension", "prescription"],
+    "category": "PDE5 Inhibitor"
+  },
+  {
+    "id": 50,
+    "name": "Tadalafil",
+    "usage": "Erectile dysfunction, benign prostatic hyperplasia",
+    "dosage": "5-20mg as needed or 2.5-5mg daily",
+    "sideEffects": "Headache, back pain, flushing",
+    "alternatives": ["Sildenafil", "Vardenafil", "Avanafil"],
+    "tags": ["erectile-dysfunction", "BPH", "prescription"],
+    "category": "PDE5 Inhibitor"
+  },
+  {
+    "id": 51,
+    "name": "Tramadol",
+    "usage": "Moderate to severe pain",
+    "dosage": "50-100mg every 4-6 hours, max 400mg daily",
+    "sideEffects": "Drowsiness, nausea, seizure risk",
+    "alternatives": ["Oxycodone", "Codeine", "Paracetamol"],
+    "tags": ["opioid", "pain-relief", "prescription"],
+    "category": "Opioid Analgesic"
+  },
+  {
+    "id": 52,
+    "name": "Codeine",
+    "usage": "Mild to moderate pain, cough suppression",
+    "dosage": "15-60mg every 4-6 hours",
+    "sideEffects": "Drowsiness, constipation, dependency",
+    "alternatives": ["Tramadol", "Hydrocodone", "Dextromethorphan"],
+    "tags": ["opioid", "pain-relief", "cough-suppressant"],
+    "category": "Opioid Analgesic"
+  },
+  {
+    "id": 53,
+    "name": "Mirtazapine",
+    "usage": "Depression, appetite stimulation",
+    "dosage": "15-45mg once daily at bedtime",
+    "sideEffects": "Drowsiness, weight gain, dry mouth",
+    "alternatives": ["Sertraline", "Trazodone", "Venlafaxine"],
+    "tags": ["antidepressant", "prescription", "appetite-stimulant"],
+    "category": "Antidepressant"
+  },
+  {
+    "id": 54,
+    "name": "Venlafaxine",
+    "usage": "Depression, anxiety, panic disorder",
+    "dosage": "37.5-225mg once daily",
+    "sideEffects": "Nausea, insomnia, increased blood pressure",
+    "alternatives": ["Sertraline", "Mirtazapine", "Duloxetine"],
+    "tags": ["antidepressant", "anxiety-relief", "prescription"],
+    "category": "SNRI"
+  }
+]
