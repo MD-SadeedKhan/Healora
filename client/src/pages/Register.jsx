@@ -14,7 +14,7 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { useAuth } from "../context/useAuth";
-import api from "../services/api"; // Import the configured api instance
+import api from "../services/api";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -34,20 +34,18 @@ const Register = () => {
   const [resendTimer, setResendTimer] = useState(30);
   const [canResend, setCanResend] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
   const { user, login } = useAuth();
   const otpInputRefs = useRef([]);
-  const [message, setMessage] = useState("");
 
   useEffect(() => {
-    // Keep this for initial state check
+    if (user) navigate("/dashboard");
   }, [user, navigate]);
 
   useEffect(() => {
     if (step === "otp" && resendTimer > 0) {
-      const timer = setInterval(() => {
-        setResendTimer((prev) => prev - 1);
-      }, 1000);
+      const timer = setInterval(() => setResendTimer((prev) => prev - 1), 1000);
       return () => clearInterval(timer);
     } else if (resendTimer === 0) {
       setCanResend(true);
@@ -57,23 +55,31 @@ const Register = () => {
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setMessage("");
+    setErrorMessage("");
     setOtpError("");
 
+    if (!formData.firstName.trim() || !formData.lastName.trim()) {
+      setErrorMessage("First and last names are required.");
+      setIsLoading(false);
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      setErrorMessage("Please enter a valid email address.");
+      setIsLoading(false);
+      return;
+    }
     if (formData.password !== formData.confirmPassword) {
-      setMessage("Passwords do not match!");
+      setErrorMessage("Passwords do not match!");
       setIsLoading(false);
       return;
     }
-
     if (formData.password.length < 6) {
-      setMessage("Password must be at least 6 characters long!");
+      setErrorMessage("Password must be at least 6 characters long!");
       setIsLoading(false);
       return;
     }
-
     if (!formData.termsAccepted) {
-      setMessage("You must accept the Terms and Conditions to proceed.");
+      setErrorMessage("You must accept the Terms and Conditions to proceed.");
       setIsLoading(false);
       return;
     }
@@ -85,13 +91,13 @@ const Register = () => {
         email: formData.email,
         password: formData.password,
       });
-      setMessage(response.data.message);
+      setErrorMessage(response.data.message);
       setStep("otp");
+      otpInputRefs.current[0]?.focus();
     } catch (error) {
-      setMessage(
+      setErrorMessage(
         error.response?.data?.error || "Registration failed. Please try again."
       );
-      console.error("Registration error:", error.response?.data);
     } finally {
       setIsLoading(false);
     }
@@ -101,10 +107,15 @@ const Register = () => {
     e.preventDefault();
     setIsLoading(true);
     setOtpError("");
-    setMessage("");
+    setErrorMessage("");
 
     const enteredOtp = otp.join("");
-    console.log("Submitting OTP:", enteredOtp);
+    if (!/^\d{6}$/.test(enteredOtp)) {
+      setOtpError("Please enter a valid 6-digit OTP.");
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const response = await api.post("/verify-otp", {
         email: formData.email,
@@ -112,7 +123,6 @@ const Register = () => {
       });
       if (response.status === 201) {
         const { token, user: userData } = response.data;
-        console.log("Register userData:", userData);
         if (login) {
           login(userData);
           localStorage.setItem("token", token);
@@ -123,9 +133,8 @@ const Register = () => {
           }, 2500);
         }
       }
-    } catch (error) {
+    } catch {
       setOtpError("Invalid OTP. Please try again.");
-      console.error("OTP verification error:", error.response?.data);
     } finally {
       setIsLoading(false);
     }
@@ -135,54 +144,112 @@ const Register = () => {
     setIsLoading(true);
     setOtp(["", "", "", "", "", ""]);
     setOtpError("");
-    setMessage("");
+    setErrorMessage("");
 
     try {
       const response = await api.post("/resend-otp", {
         email: formData.email,
       });
-      setMessage(response.data.message);
+      setErrorMessage(response.data.message);
       setResendTimer(30);
       setCanResend(false);
+      otpInputRefs.current[0]?.focus();
     } catch (error) {
-      setMessage(error.response?.data?.error || "Failed to resend OTP.");
-      console.error("Resend OTP error:", error.response?.data);
+      setErrorMessage(error.response?.data?.error || "Failed to resend OTP.");
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleOtpChange = (index, value) => {
-    if (/^[0-9]?$/.test(value)) {
-      const newOtp = [...otp];
-      newOtp[index] = value;
-      setOtp(newOtp);
-      setOtpError("");
+    if (!/^[0-9]?$/.test(value)) return;
 
-      if (value && index < 5) {
-        otpInputRefs.current[index + 1].focus();
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+    setOtpError("");
+
+    // Update DOM value to ensure input displays the digit
+    if (otpInputRefs.current[index]) {
+      otpInputRefs.current[index].value = value;
+    }
+
+    // Auto-advance to next input or submit if last digit
+    if (value && index < 5) {
+      const nextInput = otpInputRefs.current[index + 1];
+      if (nextInput) {
+        nextInput.focus();
       }
+    } else if (value && index === 5 && !newOtp.includes("")) {
+      setTimeout(() => {
+        document.querySelector("form")?.requestSubmit();
+      }, 100);
     }
   };
 
   const handleOtpKeyDown = (index, e) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
-      otpInputRefs.current[index - 1].focus();
+      const prevInput = otpInputRefs.current[index - 1];
+      if (prevInput) {
+        prevInput.focus();
+      }
+    }
+    if (e.key === "ArrowRight" && index < 5) {
+      e.preventDefault();
+      const nextInput = otpInputRefs.current[index + 1];
+      if (nextInput) {
+        nextInput.focus();
+      }
+    }
+    if (e.key === "ArrowLeft" && index > 0) {
+      e.preventDefault();
+      const prevInput = otpInputRefs.current[index - 1];
+      if (prevInput) {
+        prevInput.focus();
+      }
+    }
+  };
+
+  const handleOtpPaste = (e) => {
+    e.preventDefault();
+    const pasted = e.clipboardData.getData("text").trim();
+    if (!/^\d{6}$/.test(pasted)) {
+      setOtpError("Pasted OTP must be exactly 6 digits");
+      return;
+    }
+
+    const newOtp = pasted.split("").slice(0, 6);
+    setOtp(newOtp);
+    setOtpError("");
+
+    // Update DOM values for all inputs
+    newOtp.forEach((digit, idx) => {
+      if (otpInputRefs.current[idx]) {
+        otpInputRefs.current[idx].value = digit;
+      }
+    });
+
+    const lastInput = otpInputRefs.current[5];
+    if (lastInput) {
+      lastInput.focus();
+    }
+
+    // Auto-submit if valid OTP
+    if (!newOtp.includes("")) {
+      setTimeout(() => {
+        document.querySelector("form")?.requestSubmit();
+      }, 100);
     }
   };
 
   const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrorMessage("");
   };
 
   const handleTermsChange = (e) => {
-    setFormData({
-      ...formData,
-      termsAccepted: e.target.checked,
-    });
+    setFormData({ ...formData, termsAccepted: e.target.checked });
+    setErrorMessage("");
   };
 
   return (
@@ -309,9 +376,7 @@ const Register = () => {
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/70 hover:text-white transition-colors"
-                    aria-label={
-                      showPassword ? "Hide password" : "Show password"
-                    }
+                    aria-label={showPassword ? "Hide password" : "Show password"}
                     disabled={isLoading}
                   >
                     {showPassword ? (
@@ -391,6 +456,7 @@ const Register = () => {
                   </Label>
                 </div>
               </div>
+
               <Button
                 type="submit"
                 disabled={isLoading || !formData.termsAccepted}
@@ -407,8 +473,14 @@ const Register = () => {
                 )}
               </Button>
 
-              {message && (
-                <p className="text-center text-white/90 mt-2">{message}</p>
+              {errorMessage && (
+                <p
+                  id="register-error"
+                  className="text-center text-red-200 bg-red-500/20 p-2 rounded-xl mt-2"
+                  role="alert"
+                >
+                  {errorMessage}
+                </p>
               )}
             </form>
           ) : (
@@ -419,9 +491,13 @@ const Register = () => {
                   below.
                 </p>
                 {otpError && (
-                  <div className="p-2 bg-red-500/20 text-red-200 rounded-xl text-sm mb-4">
+                  <p
+                    id="otp-error"
+                    className="p-2 bg-red-500/20 text-red-200 rounded-xl text-sm mb-4"
+                    role="alert"
+                  >
                     {otpError}
-                  </div>
+                  </p>
                 )}
               </div>
 
@@ -438,11 +514,19 @@ const Register = () => {
                       maxLength="1"
                       value={digit}
                       onChange={(e) => handleOtpChange(index, e.target.value)}
+                      onInput={(e) => handleOtpChange(index, e.target.value)}
                       onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                      onPaste={index === 0 ? handleOtpPaste : undefined}
                       ref={(el) => (otpInputRefs.current[index] = el)}
                       className="w-12 h-12 text-center text-lg font-medium bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/30 rounded-xl backdrop-blur-sm"
                       required
                       disabled={isLoading}
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      autoComplete="one-time-code"
+                      aria-label={`OTP digit ${index + 1}`}
+                      aria-describedby={otpError ? "otp-error" : undefined}
+                      aria-invalid={otpError ? "true" : "false"}
                     />
                   ))}
                 </div>
@@ -467,7 +551,7 @@ const Register = () => {
 
               <Button
                 type="submit"
-                disabled={isLoading}
+                disabled={isLoading || otp.some((digit) => digit === "")}
                 aria-busy={isLoading}
                 className="w-full h-12 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02] disabled:opacity-50"
               >
@@ -492,8 +576,14 @@ const Register = () => {
                 </button>
               </div>
 
-              {message && (
-                <p className="text-center text-white/90 mt-2">{message}</p>
+              {errorMessage && (
+                <p
+                  id="otp-message"
+                  className="text-center text-white/90 mt-2"
+                  role="status"
+                >
+                  {errorMessage}
+                </p>
               )}
             </form>
           )}
