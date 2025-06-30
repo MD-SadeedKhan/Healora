@@ -7,7 +7,7 @@ import { User, MapPin, Heart, Shield, Edit } from "lucide-react";
 import { useToast } from "../hooks/use-toast";
 import EditProfileModal from "../components/EditProfileModal";
 import { useAuth } from "../context/useAuth";
-import axios from "axios";
+import api from "../services/api";
 
 const Profile = () => {
   const [userData, setUserData] = useState(null);
@@ -17,10 +17,7 @@ const Profile = () => {
 
   const fetchProfile = useCallback(async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/user/profile`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
-
+      const res = await api.get("/user/profile");
       const user = res.data;
       const fullName =
         user.name || `${user.firstName || ""} ${user.lastName || ""}`.trim();
@@ -71,15 +68,7 @@ const Profile = () => {
       const lastName = nameParts.slice(1).join(" ") || "Unknown";
       const { fullName: _, ...rest } = updatedData;
 
-      await axios.put(
-        `${import.meta.env.VITE_API_URL}/user/profile`,
-        { firstName, lastName, ...rest },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      await api.put("/user/profile", { firstName, lastName, ...rest });
 
       toast({
         title: "✅ Profile Updated Successfully",

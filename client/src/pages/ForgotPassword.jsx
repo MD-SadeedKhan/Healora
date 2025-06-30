@@ -4,7 +4,7 @@ import { Mail, Heart } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-import axios from "axios";
+import api from "../services/api";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -12,21 +12,24 @@ const ForgotPassword = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  // Handle request OTP
   const handleRequestOtp = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
 
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/forgot-password`,
-        { email }
-      );
-      setError(response.data.message || "");
-      navigate(`/reset?email=${encodeURIComponent(email)}`); // Fixed navigation syntax
+      const response = await api.post("/forgot-password", { email });
+      const message = response.data.message;
+      setError(typeof message === "string" ? message : JSON.stringify(message));
+      navigate(`/reset?email=${encodeURIComponent(email)}`);
     } catch (err) {
-      setError(err.response?.data?.error || "Failed to send OTP. Please try again.");
+      const errMsg = err.response?.data?.error || err.response?.data?.message;
+      setError(
+        typeof errMsg === "string"
+          ? errMsg
+          : JSON.stringify(errMsg || "Failed to send OTP. Please try again.")
+      );
+      console.error("❌ [ForgotPassword] Error:", err);
     } finally {
       setIsLoading(false);
     }
@@ -60,6 +63,7 @@ const ForgotPassword = () => {
                 {error}
               </div>
             )}
+
             <div className="space-y-1">
               <Label htmlFor="email" className="text-white font-medium drop-shadow-sm">
                 Email Address

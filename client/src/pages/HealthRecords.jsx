@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 import { toast } from 'react-hot-toast';
 import RecordCard from '../components/RecordCard';
 import AddRecordModal from '../components/AddRecordModal';
@@ -37,9 +37,7 @@ const HealthRecords = () => {
         setLoading(false);
         return;
       }
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/health-records`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await api.get('/health-records');
       setRecords(response.data);
       setFilteredRecords(response.data);
     } catch {
@@ -60,9 +58,7 @@ const HealthRecords = () => {
         toast.error('Please log in to add records');
         return;
       }
-      await axios.post(`${import.meta.env.VITE_API_URL}/api/health-records`, recordData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.post('/health-records', recordData);
       toast.success('Record added!');
       await fetchRecords();
     } catch {
@@ -77,9 +73,7 @@ const HealthRecords = () => {
         toast.error('Please log in to edit records');
         return;
       }
-      await axios.put(`${import.meta.env.VITE_API_URL}/api/health-records/${recordData._id}`, recordData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.put(`/health-records/${recordData._id}`, recordData);
       toast.success('Record updated!');
       await fetchRecords();
     } catch {
@@ -94,9 +88,7 @@ const HealthRecords = () => {
         toast.error('Please log in to delete records');
         return;
       }
-      await axios.delete(`${import.meta.env.VITE_API_URL}/api/health-records/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.delete(`/health-records/${id}`);
       toast.success('Record deleted!');
       await fetchRecords();
     } catch {
@@ -116,18 +108,17 @@ const HealthRecords = () => {
     toast.success('All records exported!');
   };
 
-// Statistics
-const totalRecords = records.length;
-const thisMonthRecords = records.filter(
-  (record) =>
-    new Date(record.date).getMonth() === new Date().getMonth() &&
-    new Date(record.date).getFullYear() === new Date().getFullYear()
-).length;
+  // Statistics
+  const totalRecords = records.length;
+  const thisMonthRecords = records.filter(
+    (record) =>
+      new Date(record.date).getMonth() === new Date().getMonth() &&
+      new Date(record.date).getFullYear() === new Date().getFullYear()
+  ).length;
 
-// ✅ Updated with safe checks
-const doctors = [...new Set((records || []).filter(Boolean).map((r) => r.doctor).filter(Boolean))].length;
-const facilities = [...new Set((records || []).filter(Boolean).map((r) => r.hospital).filter(Boolean))].length;
-
+  // Safe checks for doctors and facilities
+  const doctors = [...new Set((records || []).filter(Boolean).map((r) => r.doctor).filter(Boolean))].length;
+  const facilities = [...new Set((records || []).filter(Boolean).map((r) => r.hospital).filter(Boolean))].length;
 
   if (authLoading) {
     return (

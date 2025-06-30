@@ -4,7 +4,7 @@ import { Lock, Key, Eye, EyeOff } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-import axios from "axios";
+import api from "../services/api";
 import SuccessMessage from "../components/SuccessMessage";
 
 const ResetPassword = () => {
@@ -18,7 +18,7 @@ const ResetPassword = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
-  const [successMessage, setSuccessMessage] = useState(""); // New state for the success message
+  const [successMessage, setSuccessMessage] = useState("");
   const email = searchParams.get("email") || "";
 
   const handleOtpChange = (index, value) => {
@@ -56,38 +56,38 @@ const ResetPassword = () => {
 
     try {
       const enteredOtp = otp.join("");
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/reset-password`, {
-
+      const response = await api.post("/reset-password", {
         email,
         otp: enteredOtp,
         newPassword,
       });
+
       if (response.data.success) {
-        console.log("Success response:", response.data); // Debug log
-        // Clear form on success
         setOtp(["", "", "", "", "", ""]);
         setNewPassword("");
         setConfirmNewPassword("");
         setShowNewPassword(false);
         setShowConfirmPassword(false);
         setError("");
-        // Set success message and show it
+
         setSuccessMessage(response.data.message);
         setShowSuccess(true);
+
         setTimeout(() => {
-          console.log("Redirecting to login");
           navigate("/login");
-        }, 3000); // 3-second delay
+        }, 3000);
       }
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to reset password. Please try again.");
+      const errMsg = err.response?.data?.message;
+      setError(typeof errMsg === "string" ? errMsg : "Failed to reset password.");
+      console.error("❌ [ResetPassword] Error:", err);
     } finally {
       setIsLoading(false);
     }
   };
 
   if (showSuccess) {
-    return <SuccessMessage message={successMessage} />; // Use the stored success message
+    return <SuccessMessage message={successMessage} />;
   }
 
   return (

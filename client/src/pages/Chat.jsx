@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
+import { Link, useNavigate } from 'react-router-dom';
+import api from '../services/api';
 import { Send, Mic } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -54,64 +54,71 @@ const Chat = () => {
   const [isListening, setIsListening] = useState(false);
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
-  const recognition = useRef(null);
+  const recognitionRef = useRef(null);
+  const navigate = useNavigate();
+
+  // Scroll to bottom with smooth behavior
+  const scrollToBottom = () => {
+    setTimeout(() => {
+      if (messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      }
+    }, 100);
+  };
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, isLoading]);
+  }, [messages]);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
+  // Speech recognition setup
   useEffect(() => {
     if (typeof window !== 'undefined' && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       const SpeechGrammarList = window.SpeechGrammarList || window.webkitSpeechGrammarList;
 
-      recognition.current = new SpeechRecognition();
-      recognition.current.continuous = false;
-      recognition.current.interimResults = false;
-      recognition.current.lang = 'en-US';
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
 
       if (SpeechGrammarList) {
         const grammar = '#JSGF V1.0; grammar health; public <health> = health | doctor | medicine | appointment ;';
         const speechRecognitionList = new SpeechGrammarList();
         try {
           if (speechRecognitionList.addFromString) {
-            console.log('🎤 [Chat] Adding speech grammar');
             speechRecognitionList.addFromString(grammar, 1);
-            recognition.current.grammars = speechRecognitionList;
-          } else {
-            console.warn('⚠️ [Chat] SpeechGrammarList.addFromString not supported');
+            recognition.grammars = speechRecognitionList;
           }
         } catch (error) {
           console.error('❌ [Chat] Error adding speech grammar:', error.message);
-          toast.error('Failed to initialize speech recognition grammar.');
+          toast.error('Failed to initialize speech recognition.');
         }
-      } else {
-        console.warn('⚠️ [Chat] SpeechGrammarList not supported in this browser');
       }
 
-      recognition.current.onresult = (event) => {
+      recognition.onresult = (event) => {
         const transcript = event.results[0]?.[0]?.transcript || '';
-        console.log('🎤 [Chat] Speech recognized:', transcript);
         setInputMessage(transcript);
         setIsListening(false);
       };
 
-      recognition.current.onerror = (error) => {
+      recognition.onerror = (error) => {
         console.error('🎤 [Chat] Speech recognition error:', error);
         setIsListening(false);
         toast.error('Speech recognition failed. Please try again.');
       };
 
-      recognition.current.onend = () => {
-        console.log('🎤 [Chat] Speech recognition ended');
+      recognition.onend = () => {
         setIsListening(false);
       };
+
+      recognitionRef.current = recognition;
+
+      return () => {
+        if (recognitionRef.current) {
+          recognitionRef.current.stop();
+        }
+      };
     } else {
-      console.warn('⚠️ [Chat] SpeechRecognition not supported in this browser');
       toast.error('Voice input is not supported in this browser.');
     }
   }, []);
@@ -119,7 +126,6 @@ const Chat = () => {
   const handleSendMessage = async () => {
     if (!inputMessage.trim() || isLoading) return;
 
-    console.log('📤 [Chat] Sending prompt:', inputMessage);
     const userMessage = {
       id: Date.now().toString(),
       content: inputMessage,
@@ -133,19 +139,14 @@ const Chat = () => {
 
     try {
       const token = localStorage.getItem('token');
-      console.log('🔑 [Chat] Token:', token ? token.substring(0, 10) + '...' : 'Not found');
       if (!token) {
         toast.error('Please log in to use the AI Assistant');
+        navigate('/login');
         throw new Error('No token found');
       }
 
-      const response = await axios.post(
-        'https://healora-backend.onrender.com/api/ai-response',
-        { prompt: inputMessage },
-        { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }
-      );
+      const response = await api.post('/ai-response', { prompt: inputMessage });
 
-      console.log('📥 [Chat] AI Response:', response.data);
       const aiMessage = {
         id: (Date.now() + 1).toString(),
         content: response.data.response || 'No valid response received.',
@@ -158,11 +159,14 @@ const Chat = () => {
       toast.success('Query processed successfully!');
     } catch (error) {
       console.error('❌ [Chat] Error fetching AI response:', error.response?.data || error.message);
-      toast.error(
+      const errorMessage =
         error.message === 'No token found' || error.response?.status === 401
           ? 'Session expired. Please log in again.'
-          : 'Failed to get AI response. Try again later.'
-      );
+          : 'Failed to get AI response. Try again later.';
+      toast.error(errorMessage);
+      if (error.response?.status === 401) {
+        navigate('/login');
+      }
       setMessages((prev) => [
         ...prev,
         {
@@ -186,18 +190,16 @@ const Chat = () => {
   };
 
   const startListening = () => {
-    if (recognition.current && !isListening) {
+    if (recognitionRef.current && !isListening) {
       setIsListening(true);
       try {
-        console.log('🎤 [Chat] Starting speech recognition');
-        recognition.current.start();
+        recognitionRef.current.start();
       } catch (error) {
         console.error('🎤 [Chat] Voice recognition failed:', error);
         setIsListening(false);
         toast.error('Voice recognition failed. Try again.');
       }
     } else {
-      console.warn('⚠️ [Chat] Speech recognition not available or already active');
       toast.error('Voice input not available.');
     }
   };
@@ -210,6 +212,7 @@ const Chat = () => {
           <div
             ref={chatContainerRef}
             className="flex-1 overflow-y-auto px-2 py-4 space-y-4 sm:px-4 sm:py-6"
+            style={{ scrollBehavior: 'smooth' }}
           >
             {messages.map((message) => (
               <MessageBubble key={message.id} message={message} />
@@ -238,7 +241,7 @@ const Chat = () => {
                       ? 'bg-red-100 text-red-600 animate-pulse'
                       : 'hover:bg-gray-100 text-gray-600'
                   }`}
-                  disabled={isLoading || !recognition.current}
+                  disabled={isLoading || !recognitionRef.current}
                   aria-label={isListening ? 'Stop voice input' : 'Start voice input'}
                 >
                   <Mic size={16} className="sm:size-18" />

@@ -5,6 +5,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { useAuth } from '../context/useAuth';
+import api from '../services/api';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -21,23 +22,10 @@ const Login = () => {
     setError('');
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await api.post('/login', { email, password });
 
-      console.log('📝 [Login] Response status:', response.status);
-      const data = await response.json();
-      console.log('📥 [Login] Response data:', data);
-      console.log('📤 [Login] Request body:', { email, password });
-
-      if (!response.ok) {
-        throw new Error(data.message || `HTTP error! Status: ${response.status}`);
-      }
-
+      const data = response.data;
       if (data.success) {
-        console.log('✅ [Login] Successful, storing token:', data.token);
         const userData = {
           firstName: data.user.firstName || '',
           lastName: data.user.lastName || '',
@@ -48,20 +36,21 @@ const Login = () => {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(userData));
         login(userData);
-        console.log('✅ [Login] Auth state updated, navigating to /dashboard');
         navigate('/dashboard');
       } else {
-        throw new Error(data.message || 'Login failed. Please check your credentials.');
+        throw new Error(data.message || 'Login failed.');
       }
     } catch (err) {
-      if (err.message.includes('Invalid credentials')) {
+      const message =
+        err.response?.data?.message ||
+        err.message ||
+        'An unexpected error occurred. Please try again.';
+      if (message.includes('Invalid credentials')) {
         setError('Invalid email or password. Please register or verify your email.');
-      } else if (err.name === 'TypeError' && err.message.includes('Failed to fetch')) {
-        setError('Failed to connect to the server. Please check your network.');
       } else {
-        setError('An unexpected error occurred. Please try again.');
+        setError(message.toString());
       }
-      console.error('❌ [Login] Error:', err.message);
+      console.error('❌ [Login Error]', err);
     } finally {
       setIsLoading(false);
     }
@@ -84,7 +73,6 @@ const Login = () => {
               </div>
               <h1 className="text-xl font-bold text-[#4682B4] font-['Poppins'] sm:text-2xl">Healora</h1>
             </div>
-            
             <h2 className="text-2xl font-bold text-white mb-2 font-['Poppins'] drop-shadow-sm sm:text-3xl">
               Welcome Back to Healora
             </h2>
@@ -94,11 +82,12 @@ const Login = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-            {error && (
+            {typeof error === 'string' && error && (
               <div className="p-2 bg-red-500/20 text-red-200 rounded-xl text-xs sm:p-3 sm:text-sm">
                 {error}
               </div>
             )}
+
             <div className="space-y-1 sm:space-y-2">
               <Label htmlFor="email" className="text-white font-medium drop-shadow-sm text-sm sm:text-base">
                 Email Address
@@ -150,7 +139,7 @@ const Login = () => {
                   )}
                 </button>
               </div>
-              
+
               <div className="text-right">
                 <Link 
                   to="/forgot-password" 
