@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create Axios instance with base URL from environment variable
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'https://healora-backend.onrender.com/api',
+  baseURL: import.meta.env.VITE_BACKEND_URL || 'https://healora-backend.onrender.com/api',
   headers: {
     'Content-Type': 'application/json',
   },
