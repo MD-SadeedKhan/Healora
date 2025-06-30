@@ -22,3 +22,12 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+# Ignore all env files
+.env
+.env.local
+.env.production
+.env.development
+
+# If inside folders
+client/.env
+server/.env

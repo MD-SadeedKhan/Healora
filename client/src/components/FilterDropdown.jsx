@@ -28,14 +28,14 @@ const FilterDropdown = ({ records, setFilteredRecords }) => {
     if (search) {
       filtered = filtered.filter(
         (record) =>
-          record.title.toLowerCase().includes(search.toLowerCase()) ||
-          record.doctor?.toLowerCase().includes(search.toLowerCase()) ||
-          record.condition?.toLowerCase().includes(search.toLowerCase())
+          record.title?.toLowerCase()?.includes(search.toLowerCase()) ||
+          record.doctor?.toLowerCase()?.includes(search.toLowerCase()) ||
+          record.condition?.toLowerCase()?.includes(search.toLowerCase())
       );
     }
 
     if (type !== 'All Types') {
-      filtered = filtered.filter((record) => record.type === type);
+      filtered = filtered.filter((record) => record.type?.toLowerCase() === type.toLowerCase());
     }
 
     if (dateRange !== 'All Time') {
@@ -47,7 +47,7 @@ const FilterDropdown = ({ records, setFilteredRecords }) => {
             new Date(record.date).getFullYear() === now.getFullYear()
         );
       }
-      // Add more date ranges as needed
+      // Additional filters can be added
     }
 
     setFilteredRecords(filtered);

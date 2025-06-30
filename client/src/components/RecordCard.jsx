@@ -1,41 +1,27 @@
- import React from 'react';
-     import { Download, Edit, Trash2 } from 'lucide-react';
+import React from 'react';
+import { Trash, Edit, Download } from 'lucide-react';
 
-     function RecordCard({ record, onEdit, onDelete, onDownload }) {
-       return (
-         <div className="bg-card text-card-foreground p-4 rounded-lg shadow-md">
-           <h3 className="text-lg font-bold">{record.title}</h3>
-           <p className="text-sm text-muted-foreground">
-             Date: {new Date(record.date).toLocaleDateString()}
-           </p>
-           <p className="text-sm">Doctor: {record.doctor}</p>
-           <p className="text-sm">Type: {record.type}</p>
-           <p className="text-sm">Notes: {record.notes || 'None'}</p>
-           <div className="flex gap-2 mt-2">
-             <button
-               onClick={() => onEdit(record)}
-               className="text-blue-500 hover:text-blue-700"
-               title="Edit"
-             >
-               <Edit className="w-5 h-5" />
-             </button>
-             <button
-               onClick={() => onDelete(record._id)}
-               className="text-red-500 hover:text-red-700"
-               title="Delete"
-             >
-               <Trash2 className="w-5 h-5" />
-             </button>
-             <button
-               onClick={() => onDownload(record)}
-               className="text-green-500 hover:text-green-700"
-               title="Download"
-             >
-               <Download className="w-5 h-5" />
-             </button>
-           </div>
-         </div>
-       );
-     }
+const RecordCard = ({ record, onEdit, onDelete, onDownload }) => {
+  return (
+    <div className="bg-white rounded-lg shadow-md p-4">
+      <div className="mb-2">
+        <h2 className="text-lg font-bold">{record?.title || 'Health Record'}</h2>
+        <p className="text-sm text-muted-foreground">{record?.date}</p>
+      </div>
+      <p className="text-sm text-gray-700">{record?.description}</p>
+      <div className="mt-4 flex justify-between">
+        <button onClick={onEdit} className="text-blue-500 hover:underline flex items-center gap-1">
+          <Edit size={16} /> Edit
+        </button>
+        <button onClick={onDelete} className="text-red-500 hover:underline flex items-center gap-1">
+          <Trash size={16} /> Delete
+        </button>
+        <button onClick={() => onDownload(record)} className="text-green-500 hover:underline flex items-center gap-1">
+          <Download size={16} /> Download
+        </button>
+      </div>
+    </div>
+  );
+};
 
-     export default RecordCard;
+export default RecordCard;

@@ -6,18 +6,18 @@ import { Badge } from "../components/ui/badge";
 import { User, MapPin, Heart, Shield, Edit } from "lucide-react";
 import { useToast } from "../hooks/use-toast";
 import EditProfileModal from "../components/EditProfileModal";
-import { useAuth } from "../context/useAuth"; // ✅ import
+import { useAuth } from "../context/useAuth";
 import axios from "axios";
 
 const Profile = () => {
   const [userData, setUserData] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const { toast } = useToast();
-  const { setUser } = useAuth(); // ✅ get setUser to update global context
+  const { setUser } = useAuth();
 
   const fetchProfile = useCallback(async () => {
     try {
-      const res = await axios.get("/api/user/profile", {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/user/profile`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
 
@@ -37,7 +37,6 @@ const Profile = () => {
         allergies: user.allergies || [],
       });
 
-      // ✅ Sync updated user to global context
       setUser((prev) => ({
         ...prev,
         ...user,
@@ -73,7 +72,7 @@ const Profile = () => {
       const { fullName: _, ...rest } = updatedData;
 
       await axios.put(
-        "/api/user/profile",
+        `${import.meta.env.VITE_API_URL}/user/profile`,
         { firstName, lastName, ...rest },
         {
           headers: {
@@ -87,7 +86,6 @@ const Profile = () => {
         description: `Profile for ${firstName} ${lastName} has been updated.`,
       });
 
-      // ✅ Update UI and global context
       fetchProfile();
       setIsEditModalOpen(false);
     } catch (error) {

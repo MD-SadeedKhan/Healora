@@ -2,9 +2,10 @@ const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
+
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
-const healthRecordRoutes = require("./routes/healthRecords"); // Added
+const healthRecordRoutes = require("./routes/healthRecords");
 const aiService = require("./services/MultiAIApiService");
 const authMiddleware = require("./middleware/auth");
 
@@ -16,17 +17,17 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: "http://localhost:5173",
-  methods: ["GET", "POST", "PUT", "DELETE"], // Added PUT, DELETE
+  origin: [
+    "http://localhost:5173",                // Local dev
+    "https://healora-tan.vercel.app"        // 🔗 Deployed frontend
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 }));
 app.use(express.json());
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("✅ Connected to MongoDB"))
   .catch(err => {
     console.error("❌ MongoDB connection error:", err.message, err.stack);
@@ -36,7 +37,7 @@ mongoose.connect(process.env.MONGO_URI, {
 // Routes
 app.use("/api", authRoutes);
 app.use("/api/user", userRoutes);
-app.use("/api/health-records", healthRecordRoutes); // Added
+app.use("/api/health-records", healthRecordRoutes);
 
 // AI Response Endpoint
 app.post("/api/ai-response", authMiddleware, async (req, res) => {

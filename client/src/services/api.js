@@ -1,8 +1,11 @@
-// src/services/api.js
 import axios from 'axios';
 
+// Create Axios instance with base URL from environment variable
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: import.meta.env.VITE_API_URL || 'https://healora-backend.onrender.com/api',
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
 // Add JWT token to all requests
@@ -10,68 +13,47 @@ api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers.Authorization = `Bearer ${token}`; // Fixed syntax
     }
     return config;
   },
   (error) => Promise.reject(error)
 );
 
+// Forgot Password
+export const forgotPassword = async (data) => {
+  const response = await api.post('/forgot-password', data);
+  return response.data;
+};
+
 // Reset Password
 export const resetPassword = async (data) => {
-  try {
-    const response = await api.post('/reset-password', data);
-    return response.data;
-  } catch (error) {
-    console.error('Reset password error:', error.message, error.response?.data);
-    throw error;
-  }
+  const response = await api.post('/reset-password', data);
+  return response.data;
 };
 
 // Logout
 export const logout = async () => {
-  try {
-    const response = await api.post('/logout');
-    return response.data;
-  } catch (error) {
-    console.error('Logout error:', error.message, error.response?.data);
-    throw error;
-  }
+  const response = await api.post('/logout');
+  return response.data;
 };
 
 // Search Medicines
 export const searchMedicines = async (query) => {
-  try {
-    const response = await api.get(`/medicines?query=${encodeURIComponent(query)}`);
-    return response.data;
-  } catch (error) {
-    console.error('Search medicines error:', error.message, error.response?.data);
-    throw error;
-  }
+  const response = await api.get(`/medicines?query=${encodeURIComponent(query)}`); // Fixed template literal
+  return response.data;
 };
 
 // Search Hospitals
 export const searchHospitals = async (location) => {
-  try {
-    const response = await api.get(`/hospitals?location=${encodeURIComponent(location)}`);
-    return response.data;
-  } catch (error) {
-    console.error('Search hospitals error:', error.message, error.response?.data);
-    throw error;
-  }
+  const response = await api.get(`/hospitals?location=${encodeURIComponent(location)}`); // Fixed template literal
+  return response.data;
 };
 
 // Get AI Response
 export const getAIResponse = async (prompt) => {
-  try {
-    console.log('📡 [API] Sending AI request with prompt:', prompt);
-    const response = await api.post('/ai-response', { prompt });
-    console.log('✅ [API] AI response received:', response.data);
-    return response.data;
-  } catch (error) {
-    console.error('❌ [API] AI response error:', error.message, error.response?.data);
-    throw error;
-  }
+  const response = await api.post('/ai-response', { prompt });
+  return response.data;
 };
 
 export default api;

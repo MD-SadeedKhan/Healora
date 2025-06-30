@@ -26,18 +26,24 @@ import FAQ from "./pages/FAQ.jsx";
 import AboutUs from "./pages/AboutUs.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
 import HealthRecords from "./pages/HealthRecords.jsx";
-import Profile from "./pages/Profile.jsx"; // ✅ New import
+import Profile from "./pages/Profile.jsx";
 
 // Error Boundary
 class ErrorBoundary extends React.Component {
-  state = { hasError: false, error: null };
+  state = { hasError: false, error: null, errorInfo: null };
 
   static getDerivedStateFromError(error) {
     return { hasError: true, error };
   }
 
   componentDidCatch(error, errorInfo) {
-    console.error("❌ [ErrorBoundary] Caught error:", error, errorInfo);
+    console.error("❌ [ErrorBoundary] Caught error:", {
+      message: error.message,
+      stack: error.stack,
+      componentStack: errorInfo.componentStack,
+      location: window.location.pathname,
+    });
+    this.setState({ errorInfo });
   }
 
   render() {
@@ -50,6 +56,12 @@ class ErrorBoundary extends React.Component {
             </h1>
             <p className="text-gray-600 mt-2">
               Error: {this.state.error?.message || "Unknown error"}
+            </p>
+            <p className="text-gray-600 mt-2">
+              Stack: {this.state.error?.stack || "No stack trace"}
+            </p>
+            <p className="text-gray-600 mt-2">
+              Component: {this.state.errorInfo?.componentStack || "Unknown"}
             </p>
             <a href="/" className="mt-4 inline-block text-blue-500 underline">
               Go back home
@@ -67,7 +79,9 @@ function AppContent() {
   const location = useLocation();
 
   console.log(
-    "📍 [App] user:",
+    "📍 [App] Rendered at",
+    new Date().toISOString(),
+    "user:",
     user ? { id: user.id, name: user.name } : null,
     "loading:",
     loading,
@@ -76,6 +90,7 @@ function AppContent() {
   );
 
   if (loading) {
+    console.log("📍 [App] Showing loading screen");
     return (
       <div className="min-h-screen flex items-center justify-center">
         <p className="text-gray-600">Loading...</p>
@@ -83,6 +98,7 @@ function AppContent() {
     );
   }
 
+  console.log("📍 [App] Rendering routes for location:", location.pathname);
   return (
     <ErrorBoundary>
       <Routes>
@@ -149,7 +165,7 @@ function AppContent() {
           }
         />
         <Route
-          path="/profile" // ✅ New route
+          path="/profile"
           element={
             <ProtectedRoute>
               <Profile />

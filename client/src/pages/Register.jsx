@@ -1,11 +1,20 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Eye, EyeOff, Mail, Lock, User, Heart, Key, CheckCircle } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  Mail,
+  Lock,
+  User,
+  Heart,
+  Key,
+  CheckCircle,
+} from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-import { useAuth } from "../context/useAuth"; // Updated import to useAuth.js
-import axios from "axios";
+import { useAuth } from "../context/useAuth";
+import api from "../services/api"; // Import the configured api instance
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -31,7 +40,7 @@ const Register = () => {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    // Keep this for initial state check, but it won't interfere now
+    // Keep this for initial state check
   }, [user, navigate]);
 
   useEffect(() => {
@@ -70,7 +79,7 @@ const Register = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:5000/api/register", {
+      const response = await api.post("/register", {
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
@@ -79,7 +88,9 @@ const Register = () => {
       setMessage(response.data.message);
       setStep("otp");
     } catch (error) {
-      setMessage(error.response?.data?.error || "Registration failed. Please try again.");
+      setMessage(
+        error.response?.data?.error || "Registration failed. Please try again."
+      );
       console.error("Registration error:", error.response?.data);
     } finally {
       setIsLoading(false);
@@ -95,26 +106,47 @@ const Register = () => {
     const enteredOtp = otp.join("");
     console.log("Submitting OTP:", enteredOtp);
     try {
-      const response = await axios.post("http://localhost:5000/api/verify-otp", {
+      const response = await api.post("/verify-otp", {
         email: formData.email,
         otp: enteredOtp,
       });
       if (response.status === 201) {
         const { token, user: userData } = response.data;
-        console.log('Register userData:', userData); // Added debug log here
+        console.log("Register userData:", userData);
         if (login) {
-          login(userData); // Update user state
-          localStorage.setItem("token", token); // Store token
-          setShowSuccessModal(true); // Show modal
+          login(userData);
+          localStorage.setItem("token", token);
+          setShowSuccessModal(true);
           setTimeout(() => {
-            setShowSuccessModal(false); // Hide modal after 2.5 seconds
-            navigate("/dashboard"); // Redirect after hiding modal
+            setShowSuccessModal(false);
+            navigate("/dashboard");
           }, 2500);
         }
       }
     } catch (error) {
       setOtpError("Invalid OTP. Please try again.");
       console.error("OTP verification error:", error.response?.data);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    setIsLoading(true);
+    setOtp(["", "", "", "", "", ""]);
+    setOtpError("");
+    setMessage("");
+
+    try {
+      const response = await api.post("/resend-otp", {
+        email: formData.email,
+      });
+      setMessage(response.data.message);
+      setResendTimer(30);
+      setCanResend(false);
+    } catch (error) {
+      setMessage(error.response?.data?.error || "Failed to resend OTP.");
+      console.error("Resend OTP error:", error.response?.data);
     } finally {
       setIsLoading(false);
     }
@@ -136,27 +168,6 @@ const Register = () => {
   const handleOtpKeyDown = (index, e) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       otpInputRefs.current[index - 1].focus();
-    }
-  };
-
-  const handleResendOtp = async () => {
-    setIsLoading(true);
-    setOtp(["", "", "", "", "", ""]);
-    setOtpError("");
-    setMessage("");
-
-    try {
-      const response = await axios.post("http://localhost:5000/api/resend-otp", {
-        email: formData.email,
-      });
-      setMessage(response.data.message);
-      setResendTimer(30);
-      setCanResend(false);
-    } catch (error) {
-      setMessage(error.response?.data?.error || "Failed to resend OTP.");
-      console.error("Resend OTP error:", error.response?.data);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -189,7 +200,9 @@ const Register = () => {
               <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                 <Heart className="w-8 h-8 text-white" />
               </div>
-              <h1 className="text-3xl font-bold text-[#1e3a8a] font-['Poppins']">Healora</h1>
+              <h1 className="text-3xl font-bold text-[#1e3a8a] font-['Poppins']">
+                Healora
+              </h1>
             </div>
             <h2 className="text-2xl font-semibold text-white font-['Poppins'] drop-shadow-sm">
               {step === "register" ? "Join Healora Today" : "Verify Your Email"}
@@ -200,7 +213,10 @@ const Register = () => {
             <form onSubmit={handleRegisterSubmit} className="space-y-5">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <Label htmlFor="firstName" className="text-white font-medium drop-shadow-sm">
+                  <Label
+                    htmlFor="firstName"
+                    className="text-white font-medium drop-shadow-sm"
+                  >
                     First Name
                   </Label>
                   <div className="relative">
@@ -220,7 +236,10 @@ const Register = () => {
                   </div>
                 </div>
                 <div className="space-y-1">
-                  <Label htmlFor="lastName" className="text-white font-medium drop-shadow-sm">
+                  <Label
+                    htmlFor="lastName"
+                    className="text-white font-medium drop-shadow-sm"
+                  >
                     Last Name
                   </Label>
                   <div className="relative">
@@ -242,7 +261,10 @@ const Register = () => {
               </div>
 
               <div className="space-y-1">
-                <Label htmlFor="email" className="text-white font-medium drop-shadow-sm">
+                <Label
+                  htmlFor="email"
+                  className="text-white font-medium drop-shadow-sm"
+                >
                   Email Address
                 </Label>
                 <div className="relative">
@@ -263,7 +285,10 @@ const Register = () => {
               </div>
 
               <div className="space-y-1">
-                <Label htmlFor="password" className="text-white font-medium drop-shadow-sm">
+                <Label
+                  htmlFor="password"
+                  className="text-white font-medium drop-shadow-sm"
+                >
                   Password
                 </Label>
                 <div className="relative">
@@ -284,16 +309,25 @@ const Register = () => {
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/70 hover:text-white transition-colors"
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
                     disabled={isLoading}
                   >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    {showPassword ? (
+                      <EyeOff className="w-5 h-5" />
+                    ) : (
+                      <Eye className="w-5 h-5" />
+                    )}
                   </button>
                 </div>
               </div>
 
               <div className="space-y-1">
-                <Label htmlFor="confirmPassword" className="text-white font-medium drop-shadow-sm">
+                <Label
+                  htmlFor="confirmPassword"
+                  className="text-white font-medium drop-shadow-sm"
+                >
                   Confirm Password
                 </Label>
                 <div className="relative">
@@ -314,38 +348,49 @@ const Register = () => {
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/70 hover:text-white transition-colors"
-                    aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                    aria-label={
+                      showConfirmPassword ? "Hide password" : "Show password"
+                    }
                     disabled={isLoading}
                   >
-                    {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    {showConfirmPassword ? (
+                      <EyeOff className="w-5 h-5" />
+                    ) : (
+                      <Eye className="w-5 h-5" />
+                    )}
                   </button>
                 </div>
               </div>
 
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <Input
+                  <input
                     id="terms"
                     name="termsAccepted"
                     type="checkbox"
                     checked={formData.termsAccepted}
                     onChange={handleTermsChange}
-                    className="h-5 w-5"
+                    className="h-4 w-4 text-blue-500 border-white/30 rounded focus:ring-blue-500 focus:ring-offset-0"
                     required
                   />
-                  <Label htmlFor="terms" className="text-white font-medium drop-shadow-sm">
+                  <Label
+                    htmlFor="terms"
+                    className="text-white font-medium drop-shadow-sm flex items-center text-sm"
+                  >
                     I agree to the{" "}
-                    <Link to="/terms" className="text-[#1e3a8a] underline">
+                    <Link to="/terms" className="text-[#1e3a8a] underline mx-1">
                       Terms and Conditions
                     </Link>{" "}
                     and{" "}
-                    <Link to="/privacy" className="text-[#1e3a8a] underline">
+                    <Link
+                      to="/privacy"
+                      className="text-[#1e3a8a] underline mx-1"
+                    >
                       Privacy Policy
                     </Link>
                   </Label>
                 </div>
               </div>
-
               <Button
                 type="submit"
                 disabled={isLoading || !formData.termsAccepted}
@@ -362,13 +407,16 @@ const Register = () => {
                 )}
               </Button>
 
-              {message && <p className="text-center text-white/90 mt-2">{message}</p>}
+              {message && (
+                <p className="text-center text-white/90 mt-2">{message}</p>
+              )}
             </form>
           ) : (
             <form onSubmit={handleOtpSubmit} className="space-y-5">
               <div className="text-center">
                 <p className="text-white/90 text-sm mb-4">
-                  We’ve sent a 6-digit OTP to {formData.email}. Please enter it below.
+                  We’ve sent a 6-digit OTP to {formData.email}. Please enter it
+                  below.
                 </p>
                 {otpError && (
                   <div className="p-2 bg-red-500/20 text-red-200 rounded-xl text-sm mb-4">
@@ -444,7 +492,9 @@ const Register = () => {
                 </button>
               </div>
 
-              {message && <p className="text-center text-white/90 mt-2">{message}</p>}
+              {message && (
+                <p className="text-center text-white/90 mt-2">{message}</p>
+              )}
             </form>
           )}
 
@@ -469,7 +519,9 @@ const Register = () => {
                 <h3 className="text-2xl font-bold text-white font-['Poppins'] mb-2">
                   Successfully Registered!
                 </h3>
-                <p className="text-white/90 mb-4">Welcome to Healora. Redirecting to your dashboard...</p>
+                <p className="text-white/90 mb-4">
+                  Welcome to Healora. Redirecting to your dashboard...
+                </p>
                 <div className="w-16 h-16 border-4 border-green-400 border-t-transparent rounded-full animate-spin mx-auto"></div>
               </div>
             </div>

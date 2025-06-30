@@ -30,9 +30,9 @@ const Contact = () => {
             </h2>
             <p className="text-gray-700">
               Stay updated by following us on our social media channels:
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-[#38BDF8] hover:underline ml-1">Twitter</a>,
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-[#38BDF8] hover:underline ml-1">Facebook</a>,
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-[#38BDF8] hover:underline ml-1">Instagram</a>.
+              <a href="https://x.com/SadeedKhan42070?t=8_R_-uGMlNh2pK1i9EKU7Q&s=08" target="_blank" rel="noopener noreferrer" className="text-[#38BDF8] hover:underline ml-1">Twitter</a>,
+              <a href="https://www.facebook.com/share/1AnHpoRyP8/" target="_blank" rel="noopener noreferrer" className="text-[#38BDF8] hover:underline ml-1">Facebook</a>,
+              <a href="https://www.instagram.com/yooo_sadeed?igsh=MXBhcXNkZHpkYXU4cA==" target="_blank" rel="noopener noreferrer" className="text-[#38BDF8] hover:underline ml-1">Instagram</a>.
             </p>
           </section>
         </div>

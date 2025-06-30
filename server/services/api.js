@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: import.meta.env.VITE_API_BASE_URL, // ✅ Uses environment variable
 });
 
 // 🔑 Reset Password
@@ -58,6 +58,5 @@ export const getAIResponse = async (prompt) => {
     throw error;
   }
 };
-
 
 export default api;

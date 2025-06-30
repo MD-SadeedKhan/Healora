@@ -21,7 +21,7 @@ const Login = () => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/login', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -45,9 +45,9 @@ const Login = () => {
           email: data.user.email,
           token: data.token,
         };
-        localStorage.setItem('token', data.token); // Store token
-        localStorage.setItem('user', JSON.stringify(userData)); // Store user
-        login(userData); // Update auth state
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(userData));
+        login(userData);
         console.log('✅ [Login] Auth state updated, navigating to /dashboard');
         navigate('/dashboard');
       } else {
@@ -68,50 +68,50 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#38BDF8] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#38BDF8] flex items-center justify-center p-2 sm:p-4">
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-20 w-32 h-32 bg-white/5 rounded-full blur-xl"></div>
-        <div className="absolute bottom-32 right-20 w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
-        <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-white/5 rounded-full blur-lg"></div>
+        <div className="absolute top-20 left-20 w-24 h-24 bg-white/5 rounded-full blur-xl sm:w-32 sm:h-32"></div>
+        <div className="absolute bottom-32 right-20 w-20 h-20 bg-white/10 rounded-full blur-xl sm:w-24 sm:h-24"></div>
+        <div className="absolute top-1/2 left-1/4 w-12 h-12 bg-white/5 rounded-full blur-lg sm:w-16 sm:h-16"></div>
       </div>
 
-      <div className="relative w-full max-w-md">
-        <div className="bg-white/15 backdrop-blur-lg border border-white/30 rounded-2xl p-8 shadow-2xl">
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                <Heart className="w-8 h-8 text-white" />
+      <div className="relative w-full max-w-sm sm:max-w-md">
+        <div className="bg-white/15 backdrop-blur-lg border border-white/30 rounded-2xl p-6 sm:p-8 shadow-2xl">
+          <div className="text-center mb-6 sm:mb-8">
+            <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center sm:w-12 sm:h-12">
+                <Heart className="w-6 h-6 text-white sm:w-8 sm:h-8" />
               </div>
-              <h1 className="text-2xl font-bold text-[#4682B4] font-['Poppins']">Healora</h1>
+              <h1 className="text-xl font-bold text-[#4682B4] font-['Poppins'] sm:text-2xl">Healora</h1>
             </div>
             
-            <h2 className="text-3xl font-bold text-white mb-2 font-['Poppins'] drop-shadow-sm">
+            <h2 className="text-2xl font-bold text-white mb-2 font-['Poppins'] drop-shadow-sm sm:text-3xl">
               Welcome Back to Healora
             </h2>
-            <p className="text-white/90 text-sm">
+            <p className="text-white/90 text-xs sm:text-sm">
               Login to continue your intelligent healthcare journey
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             {error && (
-              <div className="p-3 bg-red-500/20 text-red-200 rounded-xl text-sm">
+              <div className="p-2 bg-red-500/20 text-red-200 rounded-xl text-xs sm:p-3 sm:text-sm">
                 {error}
               </div>
             )}
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-white font-medium drop-shadow-sm">
+            <div className="space-y-1 sm:space-y-2">
+              <Label htmlFor="email" className="text-white font-medium drop-shadow-sm text-sm sm:text-base">
                 Email Address
               </Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-3 h-5 w-5 text-white/70" />
+                <Mail className="absolute left-3 top-2.5 h-4 w-4 text-white/70 sm:top-3 sm:h-5 sm:w-5" />
                 <Input
                   id="email"
                   type="email"
                   placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="pl-10 bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/30 backdrop-blur-sm"
+                  className="pl-10 bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/30 backdrop-blur-sm text-sm sm:text-base py-2 sm:py-3"
                   required
                   aria-label="Email address"
                   disabled={isLoading}
@@ -119,19 +119,19 @@ const Login = () => {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-white font-medium drop-shadow-sm">
+            <div className="space-y-1 sm:space-y-2">
+              <Label htmlFor="password" className="text-white font-medium drop-shadow-sm text-sm sm:text-base">
                 Password
               </Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-3 h-5 w-5 text-white/70" />
+                <Lock className="absolute left-3 top-2.5 h-4 w-4 text-white/70 sm:top-3 sm:h-5 sm:w-5" />
                 <Input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="pl-10 pr-10 bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/30 backdrop-blur-sm"
+                  className="pl-10 pr-10 bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/30 backdrop-blur-sm text-sm sm:text-base py-2 sm:py-3"
                   required
                   aria-label="Password"
                   disabled={isLoading}
@@ -139,14 +139,14 @@ const Login = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-3 text-white/70 hover:text-white transition-colors"
+                  className="absolute right-3 top-2.5 text-white/70 hover:text-white transition-colors sm:top-3"
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                   disabled={isLoading}
                 >
                   {showPassword ? (
-                    <EyeOff className="h-5 w-5" />
+                    <EyeOff className="h-4 w-4 sm:h-5 sm:w-5" />
                   ) : (
-                    <Eye className="h-5 w-5" />
+                    <Eye className="h-4 w-4 sm:h-5 sm:w-5" />
                   )}
                 </button>
               </div>
@@ -154,7 +154,7 @@ const Login = () => {
               <div className="text-right">
                 <Link 
                   to="/forgot-password" 
-                  className="text-sm text-white/90 hover:text-white transition-colors underline drop-shadow-sm"
+                  className="text-xs text-white/90 hover:text-white transition-colors underline drop-shadow-sm sm:text-sm"
                 >
                   Forgot password?
                 </Link>
@@ -165,7 +165,7 @@ const Login = () => {
               type="submit"
               disabled={isLoading}
               aria-busy={isLoading}
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02] disabled:opacity-50"
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02] disabled:opacity-50 sm:py-3"
             >
               {isLoading ? (
                 <div className="flex items-center gap-2">
@@ -178,8 +178,8 @@ const Login = () => {
             </Button>
           </form>
 
-          <div className="mt-6 text-center">
-            <p className="text-white/90 text-sm drop-shadow-sm">
+          <div className="mt-4 text-center sm:mt-6">
+            <p className="text-white/90 text-xs drop-shadow-sm sm:text-sm">
               Don't have an account?{' '}
               <Link 
                 to="/register" 
@@ -190,8 +190,8 @@ const Login = () => {
             </p>
           </div>
 
-          <div className="mt-8 pt-6 border-t border-white/30">
-            <div className="flex items-center justify-center gap-6 text-xs text-white/80">
+          <div className="mt-6 pt-4 border-t border-white/30 sm:mt-8 sm:pt-6">
+            <div className="flex items-center justify-center gap-4 text-xs text-white/80 sm:gap-6">
               <span className="flex items-center gap-1">
                 <div className="w-2 h-2 bg-green-400 rounded-full"></div>
                 Secure Login

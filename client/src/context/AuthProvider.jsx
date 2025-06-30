@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
 
       if (storedToken) {
         try {
-          const response = await axios.get('http://localhost:5000/api/user/profile', {
+          const response = await axios.get('https://healora-backend.onrender.com/api/profile', {
             headers: { Authorization: `Bearer ${storedToken}` },
           });
 

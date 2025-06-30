@@ -2,44 +2,71 @@ import React from 'react';
 import { MessageSquare, Search, Clock } from 'lucide-react';
 
 const RecentActivity = () => {
+  // Static dummy data for realistic user activities
   const activities = [
     {
       id: 1,
       type: 'ai-chat',
-      title: 'Asked about persistent headaches',
-      preview: 'It could be related to stress or dehydration. Consider seeing a doctor if it persists...',
-      time: '2 hours ago',
-      confidence: 85,
-      tags: ['headache', 'stress', 'hydration']
+      title: 'Asked about chronic back pain',
+      preview: 'Possible causes include muscle strain or sciatica. Consider consulting a specialist...',
+      confidence: 82,
+      tags: ['back-pain', 'muscle-strain', 'sciatica'],
     },
     {
       id: 2,
       type: 'medicine',
-      title: 'Searched for Ibuprofen',
-      preview: 'Anti-inflammatory medication used for pain relief and reducing fever...',
-      time: '5 hours ago',
-      confidence: 95,
-      tags: ['pain-relief', 'anti-inflammatory']
+      title: 'Searched for Paracetamol',
+      preview: 'Pain reliever and fever reducer, commonly used for headaches and mild pain...',
+      confidence: 90,
+      tags: ['pain-relief', 'fever', 'medication'],
     },
     {
       id: 3,
       type: 'ai-chat',
-      title: 'Symptoms checker for cold',
-      preview: 'Based on your symptoms, it appears to be a common cold. Rest and hydration are key...',
-      time: '1 day ago',
-      confidence: 78,
-      tags: ['cold', 'symptoms', 'recovery']
+      title: 'Checked symptoms for allergies',
+      preview: 'Symptoms suggest seasonal allergies. Antihistamines may help, consult a doctor...',
+      confidence: 75,
+      tags: ['allergies', 'symptoms', 'antihistamines'],
     },
     {
       id: 4,
       type: 'hospital',
-      title: 'Found nearby cardiology clinic',
-      preview: 'Heart Care Center - 2.3 miles away, accepting new patients...',
-      time: '2 days ago',
+      title: 'Found nearby pediatric clinic',
+      preview: 'Sunshine Pediatric Care - 1.5 miles away, open for appointments...',
       confidence: null,
-      tags: ['cardiology', 'clinic', 'nearby']
-    }
+      tags: ['pediatrics', 'clinic', 'nearby'],
+    },
+    {
+      id: 5,
+      type: 'ai-chat',
+      title: 'Asked about insomnia treatment',
+      preview: 'Sleep hygiene or cognitive therapy may help. Consult a sleep specialist if persistent...',
+      confidence: 80,
+      tags: ['insomnia', 'sleep', 'therapy'],
+    },
   ];
+
+  // Predefined time options that rotate daily
+  const timeOptions = [
+    'Just Now',
+    '1 hour ago',
+    '3 hours ago',
+    '6 hours ago',
+    '12 hours ago',
+    '1 day ago',
+    '2 days ago',
+  ];
+
+  // Get current day of the month to cycle time
+  const today = new Date();
+  const dayOfMonth = today.getDate(); // 1 to 31
+  const dayIndex = dayOfMonth % timeOptions.length; // Cycle through options
+
+  // Assign time to activities based on day
+  const activitiesWithTime = activities.map((activity, index) => ({
+    ...activity,
+    time: timeOptions[(dayIndex + index) % timeOptions.length], // Offset for each activity
+  }));
 
   const getIcon = (type) => {
     switch (type) {
@@ -73,7 +100,7 @@ const RecentActivity = () => {
       </div>
 
       <div className="space-y-4">
-        {activities.map((activity) => {
+        {activitiesWithTime.map((activity) => {
           const Icon = getIcon(activity.type);
           const iconColor = getIconColor(activity.type);
 
@@ -94,11 +121,15 @@ const RecentActivity = () => {
                     </h4>
                     <div className="flex items-center space-x-2">
                       {activity.confidence && (
-                        <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-                          activity.confidence >= 90 ? 'bg-green-100 text-green-600' :
-                          activity.confidence >= 70 ? 'bg-yellow-100 text-yellow-600' :
-                          'bg-red-100 text-red-600'
-                        }`}>
+                        <span
+                          className={`text-xs px-2 py-1 rounded-full font-medium ${
+                            activity.confidence >= 90
+                              ? 'bg-green-100 text-green-600'
+                              : activity.confidence >= 70
+                              ? 'bg-yellow-100 text-yellow-600'
+                              : 'bg-red-100 text-red-600'
+                          }`}
+                        >
                           {activity.confidence}% confident
                         </span>
                       )}

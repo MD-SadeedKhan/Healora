@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Mail, Lock, Key, Heart } from "lucide-react";
+import { Mail, Heart } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -19,9 +19,12 @@ const ForgotPassword = () => {
     setError("");
 
     try {
-      const response = await axios.post("http://localhost:5000/api/forgot-password", { email });
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/forgot-password`,
+        { email }
+      );
       setError(response.data.message || "");
-      navigate(`/reset?email=${encodeURIComponent(email)}`); // Redirect to ResetPassword
+      navigate(`/reset?email=${encodeURIComponent(email)}`); // Fixed navigation syntax
     } catch (err) {
       setError(err.response?.data?.error || "Failed to send OTP. Please try again.");
     } finally {

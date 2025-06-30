@@ -10,6 +10,7 @@ import {
 } from './ui/select';
 import { Textarea } from './ui/textarea';
 import { useToast } from '../hooks/use-toast';
+import api from '../services/api'; // Import the configured api instance
 
 const EditProfileModal = ({ isOpen, onClose, onUpdate, _userData }) => {
   const [formData, setFormData] = useState({
@@ -26,7 +27,6 @@ const EditProfileModal = ({ isOpen, onClose, onUpdate, _userData }) => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
-  // ✅ Pre-fill form when _userData changes
   useEffect(() => {
     if (_userData) {
       setFormData({
@@ -48,7 +48,6 @@ const EditProfileModal = ({ isOpen, onClose, onUpdate, _userData }) => {
     }
   }, [_userData]);
 
-  // ✅ Form submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -67,10 +66,9 @@ const EditProfileModal = ({ isOpen, onClose, onUpdate, _userData }) => {
     }
 
     const firstName = nameParts[0];
-    const lastName = nameParts.slice(1).join(' ');
+    const lastName = nameParts.slice(1).join(' ') || 'Unknown';
 
     const updatedData = {
-      fullName,
       firstName,
       lastName,
       phone: formData.phone,
@@ -89,22 +87,16 @@ const EditProfileModal = ({ isOpen, onClose, onUpdate, _userData }) => {
     };
 
     try {
-      const res = await fetch('/api/user/profile', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: JSON.stringify(updatedData),
+      await api.put('/user/profile', updatedData); // Use api instance
+      toast({
+        title: '✅ Profile Updated Successfully',
+        description: `Profile for ${firstName} ${lastName} has been updated.`,
       });
-
-      if (!res.ok) throw new Error('Failed to update profile');
-
-      onUpdate(updatedData); // this will close modal & refresh
+      onUpdate(updatedData);
     } catch (error) {
       toast({
         title: '❌ Error',
-        description: error.message,
+        description: error.response?.data?.error || 'Failed to update profile',
         variant: 'destructive',
       });
     } finally {
@@ -116,13 +108,13 @@ const EditProfileModal = ({ isOpen, onClose, onUpdate, _userData }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="glass-card max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="w-full max-w-lg sm:max-w-2xl max-h-[95vh] overflow-y-auto glass-card p-4 sm:p-6">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-gray-800">Edit Profile</DialogTitle>
+          <DialogTitle className="text-xl sm:text-2xl font-bold text-gray-800">Edit Profile</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="fullName">Full Name</Label>
               <Input
@@ -130,6 +122,7 @@ const EditProfileModal = ({ isOpen, onClose, onUpdate, _userData }) => {
                 value={formData.fullName}
                 onChange={(e) => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
                 required
+                className="w-full"
               />
             </div>
             <div>
@@ -139,18 +132,19 @@ const EditProfileModal = ({ isOpen, onClose, onUpdate, _userData }) => {
                 value={formData.phone}
                 onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
                 required
+                className="w-full"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="gender">Gender</Label>
               <Select
                 value={formData.gender}
                 onValueChange={(value) => setFormData(prev => ({ ...prev, gender: value }))}
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select gender" />
                 </SelectTrigger>
                 <SelectContent>
@@ -170,6 +164,7 @@ const EditProfileModal = ({ isOpen, onClose, onUpdate, _userData }) => {
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, dateOfBirth: e.target.value }))
                 }
+                className="w-full"
               />
             </div>
           </div>
@@ -183,6 +178,7 @@ const EditProfileModal = ({ isOpen, onClose, onUpdate, _userData }) => {
                 setFormData((prev) => ({ ...prev, location: e.target.value }))
               }
               placeholder="City, State"
+              className="w-full"
             />
           </div>
 
@@ -194,7 +190,7 @@ const EditProfileModal = ({ isOpen, onClose, onUpdate, _userData }) => {
                 setFormData((prev) => ({ ...prev, bloodType: value }))
               }
             >
-              <SelectTrigger>
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select blood type" />
               </SelectTrigger>
               <SelectContent>
@@ -216,6 +212,7 @@ const EditProfileModal = ({ isOpen, onClose, onUpdate, _userData }) => {
                 setFormData((prev) => ({ ...prev, chronicConditions: e.target.value }))
               }
               placeholder="e.g. Diabetes, Hypertension"
+              className="w-full"
             />
             <p className="text-xs text-gray-500 mt-1">Separate multiple with commas</p>
           </div>
@@ -229,15 +226,26 @@ const EditProfileModal = ({ isOpen, onClose, onUpdate, _userData }) => {
                 setFormData((prev) => ({ ...prev, allergies: e.target.value }))
               }
               placeholder="e.g. Dust, Penicillin"
+              className="w-full"
             />
             <p className="text-xs text-gray-500 mt-1">Separate multiple with commas</p>
           </div>
 
-          <div className="flex gap-3 pt-4">
-            <Button type="button" variant="outline" onClick={handleClose} className="flex-1">
+          <div className="flex flex-col sm:flex-row gap-3 pt-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleClose}
+              className="flex-1"
+              disabled={loading}
+            >
               Cancel
             </Button>
-            <Button type="submit" className="flex-1 bg-healora-primary text-white" disabled={loading}>
+            <Button
+              type="submit"
+              className="flex-1 bg-healora-primary text-white"
+              disabled={loading}
+            >
               {loading ? 'Updating...' : 'Update Profile'}
             </Button>
           </div>
