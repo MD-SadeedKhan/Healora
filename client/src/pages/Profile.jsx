@@ -51,40 +51,10 @@ const Profile = () => {
     fetchProfile();
   }, [fetchProfile]);
 
-  const handleUpdateProfile = async (updatedData) => {
-    try {
-      const fullName = updatedData.fullName.trim();
-      const nameParts = fullName.split(" ");
-      if (nameParts.length < 2) {
-        toast({
-          title: "⚠️ Full Name Required",
-          description: "Please enter both first and last name.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      const firstName = nameParts[0];
-      const lastName = nameParts.slice(1).join(" ") || "Unknown";
-      const { fullName: _, ...rest } = updatedData;
-
-      await api.put("/user/profile", { firstName, lastName, ...rest });
-
-      toast({
-        title: "✅ Profile Updated Successfully",
-        description: `Profile for ${firstName} ${lastName} has been updated.`,
-      });
-
-      fetchProfile();
-      setIsEditModalOpen(false);
-    } catch (error) {
-      console.error("❌ Failed to update profile:", error);
-      toast({
-        title: "Error",
-        description: "There was a problem updating your profile.",
-        variant: "destructive",
-      });
-    }
+  // ✅ UPDATED: only refresh and close the modal, no API call
+  const handleUpdateProfile = () => {
+    fetchProfile();
+    setIsEditModalOpen(false);
   };
 
   const formatDate = (dateString) => {
